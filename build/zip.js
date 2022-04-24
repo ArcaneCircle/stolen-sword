@@ -14,21 +14,27 @@ const zip = () => ({
 
     if (!fs.existsSync(distPath)) fs.mkdirSync(distPath);
     
-    new JSZip()
-      .file('index.html', source)
-      .generateNodeStream({
-        type:'nodebuffer',
-        compression: "DEFLATE",
-        compressionOptions: {
-          level: 9
-        }
-      })
-      .pipe(fs.createWriteStream(zipPath))
-      .on('finish', () => {
-        execFile(advzip, ['--recompress', '--shrink-extra', zipPath], err => {
-          console.log(err ? err : 'ZIP file minified!', filesize(fs.statSync(zipPath).size));
+    let zip = new JSZip();
+    zip.file('index.html', source);
+    fs.readFile(path.join(__dirname, '..', 'manifest.toml'), (err, data) => {
+        zip.file('manifest.toml', data);
+        fs.readFile(path.join(__dirname, '..', 'icon.png'), (err, data) => {
+            zip.file('icon.png', data);
+            zip.generateNodeStream({
+                type:'nodebuffer',
+                compression: "DEFLATE",
+                compressionOptions: {
+                    level: 9
+                }
+            })
+                .pipe(fs.createWriteStream(zipPath))
+                .on('finish', () => {
+                    execFile(advzip, ['--recompress', '--shrink-extra', zipPath], err => {
+                        console.log(err ? err : 'ZIP file minified!', filesize(fs.statSync(zipPath).size));
+                    });
+                });
         });
-      });
+    });
   }
 });
 

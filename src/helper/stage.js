@@ -20,7 +20,9 @@ import {
   KEY_OBJECT_EVENT_FIRST_FRAME_TRIGGER,
   KEY_GAME_START_KEY,
   KEY_SAVE_STAGE,
-  KEY_SAVE_WAVE
+  KEY_SAVE_WAVE,
+  KEY_SAVE_LEVEL,
+  KEY_SAVE_LAST_WAVE
 } from '../constants';
 import stages from '../stages/index';
 import {
@@ -84,7 +86,18 @@ const creatStage = (config) => ({
               save(KEY_SAVE_WAVE, undefined);
               initialWave = 0;
               const nextStage = ($stageIndex.$ + 1) % stages.length;
-              if(nextStage === 0) $isGameStarted.$ = false;
+              if(nextStage === 0) {
+                $isGameStarted.$ = false;
+                const level = +load(KEY_SAVE_LEVEL) || 1;
+                if (level !== -1) {
+                  const addr = window.webxdc.selfAddr;
+                  const name = window.webxdc.selfName;
+                  const info = name + " won Stolen Sword!";
+                  const payload = { addr: addr, name: name, score: -1 };
+                  window.webxdc.sendUpdate({payload: payload, info: info}, info);
+                  save(KEY_SAVE_LEVEL, -1);
+                }
+              }
               setStage(nextStage);
             }
           };
@@ -112,6 +125,19 @@ const creatStage = (config) => ({
           stage[KEY_STAGE_IS_WAVE_CLEAN] &&
           stage[KEY_STAGE_IS_WAVE_CLEAN]()
         ) {
+          const nextLevel = (+load(KEY_SAVE_LEVEL) || 1) + 1;
+          const wave = $stageIndex.$ + "-" + $stageWave.$;
+          const lastWave = load(KEY_SAVE_LAST_WAVE);
+          const finalWave = "3-1";
+          if (nextLevel !== 0 && wave !== lastWave && wave !== finalWave) {
+            save(KEY_SAVE_LEVEL, nextLevel);
+            save(KEY_SAVE_LAST_WAVE, wave);
+            const addr = window.webxdc.selfAddr;
+            const name = window.webxdc.selfName;
+            const info = name + " reached level " + nextLevel + " in Stolen Sword!";
+            const payload = { addr: addr, name: name, score: nextLevel };
+            window.webxdc.sendUpdate({payload: payload, info: info}, info);
+          }
           ($stageWave.$ === stage[KEY_STAGE_WAVES].length - 1 ? _setWave : setWave)(
             $stageWave.$ + 1
           );

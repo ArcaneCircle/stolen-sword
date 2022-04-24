@@ -1,0 +1,9 @@
+name="Stolen Sword v0.1"
+
+[store]
+id="com.github.adbenitez.stolen-sword"
+version_name=0.1
+version_code=1
+author="adbenitez"
+author_email="adbenitez@nauta.cu"
+description="A one finger action platform game"

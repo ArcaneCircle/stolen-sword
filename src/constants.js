@@ -48,6 +48,8 @@ export const KEY_GRAPHIC_IS_ANIMATION_FINISH = key();
 export const KEY_SAVE_NEED_TUTORIAL = key();
 export const KEY_SAVE_STAGE = key();
 export const KEY_SAVE_WAVE = key();
+export const KEY_SAVE_LEVEL = key();
+export const KEY_SAVE_LAST_WAVE = key();
 
 export const SIDE_T = 't';
 export const SIDE_R = 'r';
