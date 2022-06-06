@@ -1,12 +1,10 @@
 {
-  "name": "stolen-sword",
-  "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "packageManager": "pnpm@6.32.3",
   "scripts": {
     "build": "NODE_ENV=production rollup -c build/rollup.config.js",
     "serve": "rollup -c build/rollup.config.js -w"
   },
-  "author": "Ian Chiao",
   "devDependencies": {
     "advzip-bin": "^2.0.0",
     "jszip": "^3.5.0",
